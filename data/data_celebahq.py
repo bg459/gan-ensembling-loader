@@ -37,10 +37,10 @@ def make_table():
     return attr_celebahq
 
 # make table
-attr_celebahq = make_table()
+# attr_celebahq = make_table()
 
-# convert from train/val/test to partition numbers
-part_to_int = dict(train=0, val=1, test=2)
+# # convert from train/val/test to partition numbers
+# part_to_int = dict(train=0, val=1, test=2)
 
 def get_partition_indices(part):
     return np.where(attr_celebahq['partition'] == part_to_int[part])[0]

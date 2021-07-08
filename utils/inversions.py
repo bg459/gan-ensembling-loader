@@ -66,6 +66,8 @@ def invert_lbfgs(net, target, mask=None,
 
     losses = []
     iterator = pbar(range(num_steps + 1))
+    z_dict = {}
+    
     with torch.enable_grad():
         for step_num in iterator:
             if step_num == 0:
@@ -76,13 +78,16 @@ def invert_lbfgs(net, target, mask=None,
                            'max_ls': 10}
                 loss, _, lr, _, _, _, _, _ = optimizer.step(options)
             losses.append(loss.detach().cpu().numpy())
+            if step_num % 50 == 0:
+                z_dict[step_num] = current_z.clone()
     # get final results
     with torch.no_grad():
         current_x, all_loss = compute_all_loss()
     checkpoint_dict = OrderedDict(all_loss)
-    checkpoint_dict['loss'] = sum(all_loss.values()).item()
-    checkpoint_dict['init_z'] = init_z
-    checkpoint_dict['target_x'] = target_x
+#     checkpoint_dict['loss'] = sum(all_loss.values()).item()
+#     checkpoint_dict['init_z'] = init_z
+#    checkpoint_dict['target_x'] = target_x
+    checkpoint_dict['all_z'] = z_dict
     checkpoint_dict['current_z'] = current_z
     checkpoint_dict['current_x'] = current_x
     return checkpoint_dict, losses
