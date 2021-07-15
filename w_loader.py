@@ -41,10 +41,13 @@ def load_data():
                 image = Image.open(img)
                 transform = data.get_transform('celebahq', 'imval')
                 # intermediate results are saved within "optimize" function
-                
+                suffix = label.replace(".jpg", ".pth")
+                if os.path.isfile(dest_path + "/" + suffix):
+                    print(dest_path + "/" + suffix + "already loaded... skipping")
+                    continue
                 ckpt, _ = generator.optimize(transform(image).unsqueeze(0).cuda(), mask = None)
                 ws = ckpt['all_z']
-                suffix = label.replace(".jpg", ".pth")
+                
                 torch.save(ws, dest_path + "/" + suffix)
 
 
